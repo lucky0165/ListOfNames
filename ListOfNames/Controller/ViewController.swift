@@ -76,6 +76,7 @@ class ListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
         
     }
+
     
     // MARK: - UITableView DataSource
     
@@ -97,9 +98,50 @@ class ListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        var textField = UITextField()
+        let name = names[indexPath.row]
+        
+        let alert = UIAlertController(title: "Edit", message: "", preferredStyle: .alert)
+        
+        alert.addTextField { (alertTextField) in
+            textField = alertTextField
+            textField.text = name.name
+        }
+        
+        let action = UIAlertAction(title: "Save", style: .default) { (action) in
+        
+            if let text = textField.text {
+                name.name = text
+            
+                self.saveName()
+                self.loadNames()
+            
+            }
+            
+        }
+        
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+        
     }
     
     
-    
+//    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//
+//        let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
+//
+//            let nameToDelete = self.names[indexPath.row]
+//
+//            self.contex.delete(nameToDelete)
+//
+//            self.saveName()
+//            self.loadNames()
+//
+//        }
+//
+//        return UISwipeActionsConfiguration(actions: [action])
+//    }
+
 }
 
