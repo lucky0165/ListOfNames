@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ListViewController: UITableViewController {
     
@@ -16,9 +17,64 @@ class ListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadNames()
     }
-
+    
+    func saveName() {
+        do {
+            try contex.save()
+        } catch {
+            print("Error saving name: \(error)")
+        }
+        tableView.reloadData()
+    }
+    
+    func loadNames() {
+        
+        let request: NSFetchRequest<List> = List.fetchRequest()
+        
+        do {
+          names = try contex.fetch(request)
+        } catch {
+            print("Error loading names: \(error)")
+        }
+    }
+    
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add new name", message: "Type a name", preferredStyle: .alert)
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "name..."
+            textField = alertTextField
+        }
+        
+        let addAction = UIAlertAction(title: "Add", style: .default) { (action) in
+            
+            if let text = textField.text {
+                
+                if text.count > 1 {
+                    
+                    let newName = List(context: self.contex)
+                    newName.name = text
+                    
+                    self.names.append(newName)
+                    self.saveName()
+                }
+                
+            }
+            
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alert.addAction(addAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+        
     }
     
     // MARK: - UITableView DataSource
@@ -30,9 +86,9 @@ class ListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
-    
+        
         cell.textLabel?.text = names[indexPath.row].name
-    
+        
         return cell
     }
     
@@ -42,8 +98,8 @@ class ListViewController: UITableViewController {
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
-
+    
+    
     
 }
 
