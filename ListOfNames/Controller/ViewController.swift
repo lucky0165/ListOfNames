@@ -127,21 +127,22 @@ class ListViewController: UITableViewController {
     }
     
     
-//    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//
-//        let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
-//
-//            let nameToDelete = self.names[indexPath.row]
-//
-//            self.contex.delete(nameToDelete)
-//
-//            self.saveName()
-//            self.loadNames()
-//
-//        }
-//
-//        return UISwipeActionsConfiguration(actions: [action])
-//    }
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+
+        let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
+
+            let nameToDelete = self.names[indexPath.row]
+
+            self.contex.delete(nameToDelete)
+            self.names.remove(at: indexPath.row)
+
+            self.saveName()
+            self.loadNames()
+
+        }
+
+        return UISwipeActionsConfiguration(actions: [action])
+    }
 
 }
 
